@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello World</title>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+	<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<script >
+	var socket = io();
+
+	function setUsername() {
+		socket.emit("setUsername", document.getElementById("name").value);
+	}
+	var user;
+
+	socket.on("userExists", function (data) {
+		document.getElementById("error").innerHTML = data;
+	});
+
+	socket.on("userSet", function (data) {
+		user = data.userName;
+		document.body.innerHTML = "\
+			<div class="container"> \
+			<div class="row"> \
+				<div class="col-lg-6 offset-lg-3"> \
+					<input type="text" class="form-control" id="message" placeholder="Пиши здесь..."> \
+						<button type="button" class="btn btn-primary" name="button" onclick="sendMessage()">Отправить</button> \
+						<div id="message-container"> \
+		</div> \
+			</div> \
+			 	</div> \
+			 		</div>" 
+	})
+
+	function sendMessage() {
+		var sendMessage = document.getElementById("message").value;
+		if(MessageData) {
+			socket.emit("message", {user: user, message: messageData});
+		}
+
+		document.getElementById("message").value = "";
+	}
+	socket.on("newMessage", function (data) {
+		if (user) {
+			document.getElementById("message-container").innerHTML += "<div><b>" + data.user + "</b>: " + data.message + "</div>"
+		}
+	})
+</script>
+<div class="container">
+	<div class="row">
+		
+	</div>
+</div>
+</body>
+</html>
